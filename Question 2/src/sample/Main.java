@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import static java.lang.Math.pow;
+import static java.lang.Math.round;
 
 public class Main extends Application {
     @Override
@@ -57,12 +58,13 @@ public class Main extends Application {
         pane.add(calculate, 1, 4);
 
         calculate.setOnAction(e -> {
-            int investment = Integer.parseInt(invAmnt.getText());
-            int years = Integer.parseInt(yrs.getText());
+            double investment = Double.parseDouble(invAmnt.getText());
+            double years = Double.parseDouble(yrs.getText());
             double interestRate = Double.parseDouble(anlInt.getText());
 
-            double futureValue = investment * pow((1 + (interestRate)),years * 12);
-            ftrVal.setText(String.valueOf(futureValue));
+            double futureValue = investment * pow(1 + interestRate/1200, years * 12);
+            futureValue = round(futureValue * 100.0) / 100.0;
+            ftrVal.setText(Double.toString(futureValue));
         });
 
         Scene scene = new Scene(pane);
