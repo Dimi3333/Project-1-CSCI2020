@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -58,6 +59,20 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        filelocation.setOnKeyPressed(e -> {
+            if(e.getCode() == KeyCode.ENTER){
+                try {
+                    count(new File(filelocation.getText()));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.out.println("File does not exist");
+                }
+
+                //Create graph
+                graph(inner);
+            }
+        });
+
         view.setOnMouseClicked(e -> {
             //check if file exists
             try {
@@ -66,30 +81,36 @@ public class Main extends Application {
                 ex.printStackTrace();
                 System.out.println("File does not exist");
             }
+
             //Create graph
-            //initialize variables
-            int count = 0;
-            double max = max(letters.values());
-            Canvas canvas;
-            GraphicsContext gc;
-
-            for(char a:letters.keySet()){
-                canvas = new Canvas(15, inner.getHeight() - 50);
-                inner.setHgrow(canvas, Priority.ALWAYS);
-                inner.setVgrow(canvas, Priority.ALWAYS);
-                gc = canvas.getGraphicsContext2D();
-                gc.setStroke(Color.BLACK);
-                gc.setLineWidth(1);
-                
-                double num = letters.get(a) / max;
-                double y = canvas.getHeight()*num;
-                gc.strokeRect(0, y, 10, canvas.getHeight()-y);
-
-                inner.add(canvas,count,0);
-                inner.add(new Text(Character.toString(a)),count,1);
-                count++;
-            }
+            graph(inner);
         });
+
+
+    }
+
+    private void graph(GridPane gp){
+        int count = 0;
+        double max = max(letters.values());
+        Canvas canvas;
+        GraphicsContext gc;
+
+        for(char a:letters.keySet()) {
+            canvas = new Canvas(15, gp.getHeight() - 50);
+            gp.setHgrow(canvas, Priority.ALWAYS);
+            gp.setVgrow(canvas, Priority.ALWAYS);
+            gc = canvas.getGraphicsContext2D();
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(1);
+
+            double num = letters.get(a) / max;
+            double y = canvas.getHeight() * num;
+            gc.strokeRect(0, y, 10, canvas.getHeight() - y);
+
+            gp.add(canvas, count, 0);
+            gp.add(new Text(Character.toString(a)), count, 1);
+            count++;
+        }
     }
 
     private void initLetters(){
