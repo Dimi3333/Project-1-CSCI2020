@@ -28,7 +28,7 @@ public class Main extends Application {
             for(int k=0; k < k+1; k++) {
                 check = true;
                 //generate random number
-                card = (int) (1 + 52 * random());
+                card = (int) (1 + 54 * random());
 
                 //check if it is unique
                 for(int chosen:chosenCards) {
