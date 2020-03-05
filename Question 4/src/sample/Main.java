@@ -20,9 +20,8 @@ import java.util.Scanner;
 import static java.util.Collections.max;
 
 public class Main extends Application {
+    //Used to store frequency of letters
     Map<Character, Integer> letters = new HashMap<>();
-
-
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Question 4");
@@ -34,7 +33,7 @@ public class Main extends Application {
         out.setMinSize(1000,400);
         out.setStyle("-fx-background-color: white");
 
-        //hold the letters(bottom) and canvas(center)
+        //hold the canvas in row 1 and text in row 2
         GridPane inner = new GridPane();
         inner.setMinSize(100,100);
         inner.setPadding(new Insets(10));
@@ -46,6 +45,7 @@ public class Main extends Application {
         bottom.setStyle("-fx-border-color: black");
 
         Text filenameTxt = new Text("filename");
+        //default textfile
         TextField filelocation = new TextField("src/textFile.txt");
         HBox.setHgrow(filelocation, Priority.ALWAYS);
         Button view = new Button("View");
@@ -54,38 +54,42 @@ public class Main extends Application {
         bottom.getChildren().addAll(filenameTxt, filelocation, view);
         out.setBottom(bottom);
         out.setCenter(inner);
-
         Scene scene = new Scene(out);
         primaryStage.setScene(scene);
         primaryStage.show();
 
         view.setOnMouseClicked(e -> {
+            //check if file exists
             try {
                 count(new File(filelocation.getText()));
             } catch (Exception ex) {
                 ex.printStackTrace();
+                System.out.println("File does not exist");
             }
-
             //Create graph
+            //initialize variables
             int count = 0;
             double max = max(letters.values());
             Canvas canvas;
+            GraphicsContext gc;
+
             for(char a:letters.keySet()){
                 canvas = new Canvas(15, inner.getHeight() - 50);
                 inner.setHgrow(canvas, Priority.ALWAYS);
-                GraphicsContext gc = canvas.getGraphicsContext2D();
+                inner.setVgrow(canvas, Priority.ALWAYS);
+                gc = canvas.getGraphicsContext2D();
                 gc.setStroke(Color.BLACK);
                 gc.setLineWidth(1);
-
+                
                 double num = letters.get(a) / max;
-                gc.strokeRect(0, canvas.getHeight()*num, 10, canvas.getHeight()-canvas.getHeight()*num);
+                double y = canvas.getHeight()*num;
+                gc.strokeRect(0, y, 10, canvas.getHeight()-y);
 
                 inner.add(canvas,count,0);
                 inner.add(new Text(Character.toString(a)),count,1);
                 count++;
             }
         });
-
     }
 
     private void initLetters(){

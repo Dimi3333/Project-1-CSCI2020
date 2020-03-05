@@ -1,7 +1,6 @@
 package sample;
 
 import javafx.application.Application;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,7 +10,6 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
@@ -19,12 +17,15 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Question 2");
+
+        //create the pane
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(10,10,10,10));
         pane.setVgap(5);
         pane.setHgap(10);
         pane.setStyle("-fx-background-color: lightgray");
 
+        //create the textfields and texts
         Text invAmntTxt = new Text("Investment Amount");
         pane.add(invAmntTxt,0,0);
         TextField invAmnt = new TextField();
@@ -49,8 +50,6 @@ public class Main extends Application {
         ftrVal.setAlignment(Pos.CENTER_RIGHT);
         ftrVal.setEditable(false);
         ftrVal.setStyle("-fx-text-box-border: black");
-
-        ftrVal.setBorder(Border.EMPTY);
         pane.add(ftrVal, 1,3);
 
         Button calculate = new Button("Calculate");
@@ -58,13 +57,19 @@ public class Main extends Application {
         pane.add(calculate, 1, 4);
 
         calculate.setOnAction(e -> {
-            double investment = Double.parseDouble(invAmnt.getText());
-            double years = Double.parseDouble(yrs.getText());
-            double interestRate = Double.parseDouble(anlInt.getText());
+            //see if all required text fields are filled
+            try{
+                double investment = Double.parseDouble(invAmnt.getText());
+                double years = Double.parseDouble(yrs.getText());
+                double interestRate = Double.parseDouble(anlInt.getText());
+                double futureValue = investment * pow(1 + interestRate/1200, years * 12);
+                futureValue = round(futureValue * 100.0) / 100.0;
+                ftrVal.setText(Double.toString(futureValue));
+            }
+            catch(NumberFormatException ex){
+                System.out.println("Please enter all 3 fields with numbers");
+            }
 
-            double futureValue = investment * pow(1 + interestRate/1200, years * 12);
-            futureValue = round(futureValue * 100.0) / 100.0;
-            ftrVal.setText(Double.toString(futureValue));
         });
 
         Scene scene = new Scene(pane);

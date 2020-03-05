@@ -1,11 +1,8 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -18,15 +15,18 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Question 3");
-
+        //create the pane
         Pane pane = new Pane();
         pane.setMinSize(350,350);
+
+        //create the circle path
         Circle circle = new Circle(200,200,100, Color.WHITE);
         circle.setStroke(Color.BLACK);
+        //create the points
         Circle dot1 = new Circle(circle.getCenterX(),circle.getCenterX()-circle.getRadius(),5, Color.RED);
         Circle dot2 = new Circle(circle.getCenterX(),circle.getCenterX()+circle.getRadius(),5, Color.BLUE);
         Circle dot3 = new Circle(circle.getCenterX()+circle.getRadius(),circle.getCenterY(),5, Color.YELLOW);
-
+        //create all the lines between two points
         Line line12 = new Line();
         line12.setStartX(dot1.getCenterX());
         line12.setStartY(dot1.getCenterY());
@@ -44,14 +44,24 @@ public class Main extends Application {
         line13.setStartY(dot1.getCenterY());
         line13.setEndX(dot3.getCenterX());
         line13.setEndY(dot3.getCenterY());
-
-        int a = angle(dot1, dot3, dot2);
-        Text ang12 = new Text(Integer.toString(a));
-        Text ang23 = new Text(Integer.toString(angle(dot2, dot3, dot2)));
+        //create the angle texts
+        //angle() calculates the angle for the first element
+        Text ang12 = new Text(Integer.toString(angle(dot1, dot3, dot2)));
+        Text ang23 = new Text(Integer.toString(angle(dot2, dot1, dot3)));
         Text ang13 = new Text(Integer.toString(angle(dot3, dot1, dot2)));
 
+        ang12.setX(circle.getCenterX());
+        ang12.setY(circle.getCenterY() - circle.getRadius() + 20);
+        ang23.setX(circle.getCenterX());
+        ang23.setY(circle.getCenterY() + circle.getRadius() - 20);
+        ang13.setX(circle.getCenterX() + circle.getRadius() - 20);
+        ang13.setY(circle.getCenterY());
+        //add everything so far to the children of the pane
         pane.getChildren().addAll(circle,dot1,dot2,dot3,line12,line13,line23, ang12, ang13, ang23);
 
+        //the code for mouse event below could have been made into a function to lessen clutter
+
+        //moving the red dot
         dot1.setOnMouseDragged(e -> {
             Point2D mouse = new Point2D(e.getX(), e.getY());
             Point2D origin = new Point2D(circle.getCenterX(), circle.getCenterY());
@@ -63,6 +73,7 @@ public class Main extends Application {
             ang12.setX(newTextP.getX() + circle.getCenterX());
             ang12.setY(newTextP.getY() + circle.getCenterY());
 
+            //calls angle() for all dots and rewrites the texts
             setAngle(dot1, dot2, dot3, ang12, ang23, ang13);
 
             line12.setStartX(dot1.getCenterX());
@@ -71,6 +82,7 @@ public class Main extends Application {
             line13.setStartY(dot1.getCenterY());
         });
 
+        //moving the blue dot
         dot2.setOnMouseDragged(e -> {
             Point2D mouse = new Point2D(e.getX(), e.getY());
             Point2D origin = new Point2D(circle.getCenterX(), circle.getCenterY());
@@ -89,7 +101,7 @@ public class Main extends Application {
             line12.setEndX(dot2.getCenterX());
             line12.setEndY(dot2.getCenterY());
         });
-
+        //moving the yellow dot
         dot3.setOnMouseDragged(e -> {
             Point2D mouse = new Point2D(e.getX(), e.getY());
             Point2D origin = new Point2D(circle.getCenterX(), circle.getCenterY());
